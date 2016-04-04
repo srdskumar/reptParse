@@ -33,8 +33,18 @@ public class SimpleExcelReaderExample {
      
     public static void main(String[] args) throws IOException {
         
+        //open(5),close(24),datacorrections-2(14,16),adjustments-2(19,21),o1cf(22),controldata(37,0),reconciledinvoice(35,36)
+        
+                       
         ArrayList<String> open = parseReport(5,1,2,5,8,44,46,"open");
         ArrayList<String> close = parseReport(24,1,2,5,8,44,46,"close");
+        ArrayList<String> rinvoice = parseReport(34,0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> correction = parseReport(14,0,1,4,5,10,10,"correction");
+        ArrayList<String> adjust = parseReport(18,0,4,7,8,11,11,"adjust");
+        ArrayList<String> o1cf = parseReport(22,1,2,8,5,44,46,"o1cf");
+        ArrayList<String> cdata = parseReport(36,0,1,2,3,7,7,"cdata");
+        
+        
         cleanDB();
         //importDB(open);
         
@@ -51,32 +61,59 @@ public class SimpleExcelReaderExample {
         while(itr.hasNext()){  
         sql = itr.next();
         stmt.executeUpdate(sql);
-        System.out.println(sql); 
+        //System.out.println(sql); 
+        
         }
         
         itr=close.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
         stmt.executeUpdate(sql);
+        //System.out.println(sql); 
+        }
+         
+        itr=rinvoice.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        stmt.executeUpdate(sql);
+        //System.out.println(sql); 
+        }
+        
+        itr=correction.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        stmt.executeUpdate(sql);
+        //System.out.println(sql); 
+        }
+        
+        itr=adjust.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        stmt.executeUpdate(sql);
+        //System.out.println(sql); 
+        }
+        
+        itr=o1cf.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        stmt.executeUpdate(sql);
+       // System.out.println(sql); 
+        }
+        
+        itr=cdata.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        stmt.executeUpdate(sql);
         System.out.println(sql); 
         }
-            
+        
             
         }
         catch (SQLException se){
             se.printStackTrace();
         }
         
-        
-        Iterator<String> itr=open.iterator();  
-        while(itr.hasNext()){  
-        System.out.println(itr.next());  
-        }  
-        
-        itr=close.iterator();  
-        while(itr.hasNext()){  
-        System.out.println(itr.next());  
-        }  
+          
         
     }
     
@@ -93,8 +130,14 @@ public class SimpleExcelReaderExample {
         stmt = con.createStatement();
         stmt.executeUpdate("delete from open");      
         stmt.executeUpdate("delete from close");
-            
-            
+        stmt.executeUpdate("delete from rinvoice");
+        stmt.executeUpdate("delete from correction");    
+        stmt.executeUpdate("delete from adjust");    
+        stmt.executeUpdate("delete from o1cf");
+        stmt.executeUpdate("delete from cdata");
+        stmt.executeUpdate("delete from sanity");
+        stmt.executeUpdate("delete from anomoly");
+        
         }
         catch (SQLException se){
             se.printStackTrace();
@@ -107,10 +150,9 @@ public class SimpleExcelReaderExample {
     {
         
                     
-        String excelFilePath = "Books.xlsx";
+        String excelFilePath = "GBRCNCOR.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
-        System.out.print("Parsing Sheet Number ---> "+sno);
-        System.out.println();
+        System.out.println("Parsing Sheet Number ---> "+sno+"--->"+tbl);
         ArrayList<String> ar = new ArrayList<String>();
         String sqlstr = "";
         
@@ -177,7 +219,7 @@ public class SimpleExcelReaderExample {
                 }
                 
             }
-            if(rec.length() == 5){
+            if(rec.length() == 5 || rec.length() == 8){
             rpps = rec+"-"+pay+"-"+per+"-"+svc;
             //System.out.print(rpps+"|"+dval+"|"+cval);
             //System.out.println("insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")");
