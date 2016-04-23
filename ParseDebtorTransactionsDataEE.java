@@ -29,20 +29,22 @@ import java.sql.Statement;
 
 
 
-public class SimpleExcelReaderExample {
+public class ParseDebtorTransactionsDataEE {
      
     public static void main(String[] args) throws IOException {
         
         //open(5),close(24),datacorrections-2(14,16),adjustments-2(19,21),o1cf(22),controldata(37,0),reconciledinvoice(35,36)
         
-                       
-        ArrayList<String> open = parseReport(5,1,2,5,8,44,46,"open");
-        ArrayList<String> close = parseReport(24,1,2,5,8,44,46,"close");
-        ArrayList<String> rinvoice = parseReport(34,0,1,2,3,5,6,"rinvoice");
-        ArrayList<String> correction = parseReport(14,0,1,4,5,10,10,"correction");
-        ArrayList<String> adjust = parseReport(18,0,4,7,8,11,11,"adjust");
-        ArrayList<String> o1cf = parseReport(22,1,2,8,5,44,46,"o1cf");
-        ArrayList<String> cdata = parseReport(36,0,1,2,3,7,7,"cdata");
+        //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
+        ArrayList<String> open = parseReport("Opening Position",1,2,6,9,36,37,"open");
+        ArrayList<String> close = parseReport("Closing Position",1,2,6,9,38,39,"close");
+        ArrayList<String> rinvoice = parseReport("New Debtors Invoices",0,1,3,4,13,13,"rinvoice");
+        ArrayList<String> correction = parseReport("Debtor Data Corrections",0,1,5,6,11,11,"correction");
+        ArrayList<String> adjust = parseReport("Debtor Adjustments",0,4,8,10,12,12,"adjust");
+        ArrayList<String> o1cf = parseReport("One1Clear Features",1,2,6,9,36,37,"o1cf");
+        ArrayList<String> settled = parseReport("Settled Transactions",0,1,6,5,19,20,"settled");
+        ArrayList<String> alloc = parseReport("Cash Allocations",9,10,12,13,18,18,"alloc");
+        ArrayList<String> writeoff = parseReport("Write_off",9,10,12,13,18,20,"writeoff");
         
         
         cleanDB();
@@ -57,6 +59,7 @@ public class SimpleExcelReaderExample {
         Connection con = DBConnection.getConnection();
         stmt = con.createStatement();
         
+        System.out.println("Loading data to OPEN");
         Iterator<String> itr=open.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -65,6 +68,7 @@ public class SimpleExcelReaderExample {
         
         }
         
+        System.out.println("Loading data to CLOSE");
         itr=close.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -72,6 +76,7 @@ public class SimpleExcelReaderExample {
         //System.out.println(sql); 
         }
          
+        System.out.println("Loading data to RINVOICE");
         itr=rinvoice.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -79,6 +84,7 @@ public class SimpleExcelReaderExample {
         //System.out.println(sql); 
         }
         
+        System.out.println("Loading data to CORRECTION");
         itr=correction.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -86,6 +92,7 @@ public class SimpleExcelReaderExample {
         //System.out.println(sql); 
         }
         
+        System.out.println("Loading data to ADJUST");
         itr=adjust.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -93,6 +100,7 @@ public class SimpleExcelReaderExample {
         //System.out.println(sql); 
         }
         
+        System.out.println("Loading data to O1CF");
         itr=o1cf.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -100,13 +108,30 @@ public class SimpleExcelReaderExample {
        // System.out.println(sql); 
         }
         
-        itr=cdata.iterator();  
+        System.out.println("Loading data to SETTLED");
+        itr=settled.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        //System.out.println(sql); 
+        stmt.executeUpdate(sql);
+        
+        }
+        
+        System.out.println("Loading data to ALLOC");
+        itr=alloc.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
         stmt.executeUpdate(sql);
-        System.out.println(sql); 
+        //System.out.println(sql); 
         }
         
+        System.out.println("Loading data to WRITE OFF");
+        itr=writeoff.iterator();  
+        while(itr.hasNext()){  
+        sql = itr.next();
+        stmt.executeUpdate(sql);
+        //System.out.println(sql); 
+        }
             
         }
         catch (SQLException se){
@@ -134,7 +159,9 @@ public class SimpleExcelReaderExample {
         stmt.executeUpdate("delete from correction");    
         stmt.executeUpdate("delete from adjust");    
         stmt.executeUpdate("delete from o1cf");
-        stmt.executeUpdate("delete from cdata");
+        stmt.executeUpdate("delete from settled");
+        stmt.executeUpdate("delete from alloc");
+        stmt.executeUpdate("delete from writeoff");
         stmt.executeUpdate("delete from sanity");
         stmt.executeUpdate("delete from anomoly");
         
@@ -146,7 +173,7 @@ public class SimpleExcelReaderExample {
         
     }
  
-    public static ArrayList<String> parseReport(int sno,int c1,int c2,int c3,int c4,int c5,int c6,String tbl) throws IOException
+    public static ArrayList<String> parseReport(String name,int c1,int c2,int c3,int c4,int c5,int c6,String tbl) throws IOException
     {
         
                     
@@ -158,9 +185,9 @@ public class SimpleExcelReaderExample {
         
         Workbook workbook = new XSSFWorkbook(inputStream);
         //Sheet uninv_open = workbook.getSheetAt(sno);  
-          Sheet uninv_open = workbook.getSheetAt(sno);       
-        String sname = workbook.getSheetName(sno);
-        System.out.println("Parsing Sheet Number ---> "+sno+"---> Name : "+sname+" ---> "+tbl);
+          Sheet uninv_open = workbook.getSheet(name);
+        //String sname = workbook.getSheetName(sno);
+        System.out.println("Parsing Sheet Name : "+name+" ---> "+tbl);
         Iterator<Row> iterator = uninv_open.iterator();
          
                 String rec = "";
@@ -170,16 +197,20 @@ public class SimpleExcelReaderExample {
                 double dval = 0;
                 double cval = 0;
                 String rpps = "";
+                String filter = "";
                 
                 
         while (iterator.hasNext()) {
+            
             Row nextRow = iterator.next();
             Iterator<Cell> cellIterator = nextRow.cellIterator();
              dval=0;
              cval=0;
             while (cellIterator.hasNext()) {
                 Cell cell = cellIterator.next();
-                if(cell.getColumnIndex() == c1 || cell.getColumnIndex() == c2 || cell.getColumnIndex() == c3 || cell.getColumnIndex() == c4 || cell.getColumnIndex() == c5 || cell.getColumnIndex() == c6)  
+                
+                
+                if( cell.getColumnIndex() == 23 || cell.getColumnIndex() == c1 || cell.getColumnIndex() == c2 || cell.getColumnIndex() == c3 || cell.getColumnIndex() == c4 || cell.getColumnIndex() == c5 || cell.getColumnIndex() == c6)  
                 {
                         
                 switch (cell.getCellType()) {
@@ -200,6 +231,11 @@ public class SimpleExcelReaderExample {
                          if (cell.getColumnIndex() == c4 )
                         {
                             per=cell.getStringCellValue();
+                        }
+                         
+                         if (cell.getColumnIndex() == 23 )
+                        {
+                            filter=cell.getStringCellValue();
                         }
                                                                         
                         break;
@@ -224,7 +260,19 @@ public class SimpleExcelReaderExample {
             }
             if(rec.length() == 5 || rec.length() == 8){
             rpps = rec+"-"+pay+"-"+per+"-"+svc;
-            //System.out.print(rpps+"|"+dval+"|"+cval);
+            
+           if(tbl.equalsIgnoreCase("open") || tbl.equalsIgnoreCase("close")) 
+           {
+               if(filter.equalsIgnoreCase("Missing Invoice") || filter.equalsIgnoreCase("Unreconciled") || filter.equalsIgnoreCase(""))
+                       {
+                           continue;
+                       }
+               
+           }
+            
+           // if(name.equalsIgnoreCase("Settled Transactions-Funds-Paid")){
+            //System.out.println(rpps+"|"+dval+"|"+cval);
+            //}
             //System.out.println("insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")");
             //System.out.println();
             // ADD insert Query to Array 
@@ -232,6 +280,7 @@ public class SimpleExcelReaderExample {
             ar.add(sqlstr);
             //stmt.executeUpdate("insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")");
             }
+            
         }
          
         workbook.close();

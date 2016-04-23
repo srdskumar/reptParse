@@ -29,20 +29,20 @@ import java.sql.Statement;
 
 
 
-public class SimpleExcelReaderExample {
+public class ParseCreditorData {
      
     public static void main(String[] args) throws IOException {
         
         //open(5),close(24),datacorrections-2(14,16),adjustments-2(19,21),o1cf(22),controldata(37,0),reconciledinvoice(35,36)
         
-                       
-        ArrayList<String> open = parseReport(5,1,2,5,8,44,46,"open");
-        ArrayList<String> close = parseReport(24,1,2,5,8,44,46,"close");
-        ArrayList<String> rinvoice = parseReport(34,0,1,2,3,5,6,"rinvoice");
-        ArrayList<String> correction = parseReport(14,0,1,4,5,10,10,"correction");
-        ArrayList<String> adjust = parseReport(18,0,4,7,8,11,11,"adjust");
-        ArrayList<String> o1cf = parseReport(22,1,2,8,5,44,46,"o1cf");
-        ArrayList<String> cdata = parseReport(36,0,1,2,3,7,7,"cdata");
+        //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
+        ArrayList<String> open = parseReport("Uninv Opening Position",1,2,5,8,46,46,"open");
+        ArrayList<String> close = parseReport("Uninv Closing Position",1,2,5,8,46,46,"close");
+        ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> correction = parseReport("Uninv Creditor Data Corrections",1,0,4,5,10,10,"correction");
+        ArrayList<String> adjust = parseReport("Uninv Creditor Adjustments",4,0,7,8,11,11,"adjust");
+        ArrayList<String> o1cf = parseReport("Uninv One1Clear Features",1,2,8,5,46,46,"o1cf");
+        ArrayList<String> cdata = parseReport("Creditor Control Data",0,1,2,3,7,7,"cdata");
         
         
         cleanDB();
@@ -82,15 +82,17 @@ public class SimpleExcelReaderExample {
         itr=correction.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
-        stmt.executeUpdate(sql);
         //System.out.println(sql); 
+        stmt.executeUpdate(sql);
+         
         }
         
         itr=adjust.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
-        stmt.executeUpdate(sql);
         //System.out.println(sql); 
+        stmt.executeUpdate(sql);
+        
         }
         
         itr=o1cf.iterator();  
@@ -146,7 +148,7 @@ public class SimpleExcelReaderExample {
         
     }
  
-    public static ArrayList<String> parseReport(int sno,int c1,int c2,int c3,int c4,int c5,int c6,String tbl) throws IOException
+    public static ArrayList<String> parseReport(String name,int c1,int c2,int c3,int c4,int c5,int c6,String tbl) throws IOException
     {
         
                     
@@ -158,9 +160,9 @@ public class SimpleExcelReaderExample {
         
         Workbook workbook = new XSSFWorkbook(inputStream);
         //Sheet uninv_open = workbook.getSheetAt(sno);  
-          Sheet uninv_open = workbook.getSheetAt(sno);       
-        String sname = workbook.getSheetName(sno);
-        System.out.println("Parsing Sheet Number ---> "+sno+"---> Name : "+sname+" ---> "+tbl);
+          Sheet uninv_open = workbook.getSheet(name);
+        //String sname = workbook.getSheetName(sno);
+        System.out.println("Parsing Sheet Name : "+name+" ---> "+tbl);
         Iterator<Row> iterator = uninv_open.iterator();
          
                 String rec = "";
@@ -222,11 +224,9 @@ public class SimpleExcelReaderExample {
                 }
                 
             }
-            if(rec.length() == 5 || rec.length() == 8){
+            if((rec.length() == 5 || rec.length() == 8) && (pay.length() == 5 || pay.length() == 8) ){
             rpps = rec+"-"+pay+"-"+per+"-"+svc;
-            //System.out.print(rpps+"|"+dval+"|"+cval);
-            //System.out.println("insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")");
-            //System.out.println();
+            //System.out.println(rpps+"|"+dval+"|"+cval);
             // ADD insert Query to Array 
             sqlstr = "insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")";
             ar.add(sqlstr);

@@ -29,20 +29,20 @@ import java.sql.Statement;
 
 
 
-public class SimpleExcelReaderExample {
+public class ParseDebtorData {
      
     public static void main(String[] args) throws IOException {
         
         //open(5),close(24),datacorrections-2(14,16),adjustments-2(19,21),o1cf(22),controldata(37,0),reconciledinvoice(35,36)
         
-                       
-        ArrayList<String> open = parseReport(5,1,2,5,8,44,46,"open");
-        ArrayList<String> close = parseReport(24,1,2,5,8,44,46,"close");
-        ArrayList<String> rinvoice = parseReport(34,0,1,2,3,5,6,"rinvoice");
-        ArrayList<String> correction = parseReport(14,0,1,4,5,10,10,"correction");
-        ArrayList<String> adjust = parseReport(18,0,4,7,8,11,11,"adjust");
-        ArrayList<String> o1cf = parseReport(22,1,2,8,5,44,46,"o1cf");
-        ArrayList<String> cdata = parseReport(36,0,1,2,3,7,7,"cdata");
+        //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
+        ArrayList<String> open = parseReport("Uninv Opening Position",1,2,5,8,44,46,"open");
+        ArrayList<String> close = parseReport("Uninv Closing Position",1,2,5,8,44,46,"close");
+        ArrayList<String> rinvoice = parseReport("Debtor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> correction = parseReport("Uninv Debtor Data Corrections",0,1,4,5,10,10,"correction");
+        ArrayList<String> adjust = parseReport("Uninv Debtor Adjustments",0,4,7,8,11,11,"adjust");
+        ArrayList<String> o1cf = parseReport("Uninv One1Clear Features",1,2,8,5,44,46,"o1cf");
+        ArrayList<String> cdata = parseReport("Debtor Control Data",0,1,2,3,7,7,"cdata");
         
         
         cleanDB();
@@ -146,7 +146,7 @@ public class SimpleExcelReaderExample {
         
     }
  
-    public static ArrayList<String> parseReport(int sno,int c1,int c2,int c3,int c4,int c5,int c6,String tbl) throws IOException
+    public static ArrayList<String> parseReport(String name,int c1,int c2,int c3,int c4,int c5,int c6,String tbl) throws IOException
     {
         
                     
@@ -158,9 +158,9 @@ public class SimpleExcelReaderExample {
         
         Workbook workbook = new XSSFWorkbook(inputStream);
         //Sheet uninv_open = workbook.getSheetAt(sno);  
-          Sheet uninv_open = workbook.getSheetAt(sno);       
-        String sname = workbook.getSheetName(sno);
-        System.out.println("Parsing Sheet Number ---> "+sno+"---> Name : "+sname+" ---> "+tbl);
+          Sheet uninv_open = workbook.getSheet(name);
+        //String sname = workbook.getSheetName(sno);
+        System.out.println("Parsing Sheet Name : "+name+" ---> "+tbl);
         Iterator<Row> iterator = uninv_open.iterator();
          
                 String rec = "";
