@@ -177,7 +177,7 @@ public class ParseDebtorTransactionsDataEE {
     {
         
                     
-        String excelFilePath = "GBRCNCOR.xlsx";
+        String excelFilePath = "EE/GBRMECOR.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
         
         ArrayList<String> ar = new ArrayList<String>();
@@ -201,6 +201,9 @@ public class ParseDebtorTransactionsDataEE {
                 
                 
         while (iterator.hasNext()) {
+            
+            rec="";
+            pay="";
             
             Row nextRow = iterator.next();
             Iterator<Cell> cellIterator = nextRow.cellIterator();
@@ -258,8 +261,10 @@ public class ParseDebtorTransactionsDataEE {
                 }
                 
             }
-            if(rec.length() == 5 || rec.length() == 8){
+            if((rec.length() == 5 || rec.length() == 8) && (pay.length() == 5 || pay.length() == 8)){
             rpps = rec+"-"+pay+"-"+per+"-"+svc;
+            //System.out.print(rpps);
+            //System.out.println("--->"+tbl);
             
            if(tbl.equalsIgnoreCase("open") || tbl.equalsIgnoreCase("close")) 
            {

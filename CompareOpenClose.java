@@ -29,22 +29,20 @@ import java.sql.Statement;
 
 
 
-public class ParseDebtorTransactionsData {
+public class CompareOpenClose {
      
     public static void main(String[] args) throws IOException {
         
         //open(5),close(24),datacorrections-2(14,16),adjustments-2(19,21),o1cf(22),controldata(37,0),reconciledinvoice(35,36)
         
         //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
-        ArrayList<String> open = parseReport("Opening Position",1,2,5,8,44,46,"open");
-        ArrayList<String> close = parseReport("Closing Position",1,2,5,8,44,46,"close");
-        ArrayList<String> rinvoice = parseReport("Debtor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
-        ArrayList<String> correction = parseReport("Debtor Data Corrections",0,1,4,5,10,10,"correction");
-        ArrayList<String> adjust = parseReport("Debtor Adjustments",0,4,7,8,11,11,"adjust");
-        ArrayList<String> o1cf = parseReport("One1Clear Features",1,2,5,8,41,43,"o1cf");
-        ArrayList<String> settled = parseReport("Settled Transactions-Funds-Paid",0,1,5,4,19,20,"settled");
-        ArrayList<String> alloc = parseReport("Cash Allocations",9,10,11,12,19,21,"alloc");
-        ArrayList<String> writeoff = parseReport("Write_off",9,10,11,12,19,21,"writeoff");
+        ArrayList<String> open = parseReport("Uninv Opening Position",1,2,5,8,46,46,"open");
+        ArrayList<String> close = parseReport("Uninv Closing Position",1,2,5,8,46,46,"close");
+        ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> correction = parseReport("Uninv Creditor Data Corrections",1,0,4,5,10,10,"correction");
+        ArrayList<String> adjust = parseReport("Uninv Creditor Adjustments",4,0,7,8,11,11,"adjust");
+        ArrayList<String> o1cf = parseReport("Uninv One1Clear Features",1,2,8,5,46,46,"o1cf");
+        ArrayList<String> cdata = parseReport("Creditor Control Data",0,1,2,3,7,7,"cdata");
         
         
         cleanDB();
@@ -59,7 +57,6 @@ public class ParseDebtorTransactionsData {
         Connection con = DBConnection.getConnection();
         stmt = con.createStatement();
         
-        System.out.println("Loading data to OPEN");
         Iterator<String> itr=open.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -68,7 +65,6 @@ public class ParseDebtorTransactionsData {
         
         }
         
-        System.out.println("Loading data to CLOSE");
         itr=close.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -76,7 +72,6 @@ public class ParseDebtorTransactionsData {
         //System.out.println(sql); 
         }
          
-        System.out.println("Loading data to RINVOICE");
         itr=rinvoice.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -84,23 +79,22 @@ public class ParseDebtorTransactionsData {
         //System.out.println(sql); 
         }
         
-        System.out.println("Loading data to CORRECTION");
         itr=correction.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
-        stmt.executeUpdate(sql);
         //System.out.println(sql); 
+        stmt.executeUpdate(sql);
+         
         }
         
-        System.out.println("Loading data to ADJUST");
         itr=adjust.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
-        stmt.executeUpdate(sql);
         //System.out.println(sql); 
+        stmt.executeUpdate(sql);
+        
         }
         
-        System.out.println("Loading data to O1CF");
         itr=o1cf.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
@@ -108,30 +102,13 @@ public class ParseDebtorTransactionsData {
        // System.out.println(sql); 
         }
         
-        System.out.println("Loading data to SETTLED");
-        itr=settled.iterator();  
-        while(itr.hasNext()){  
-        sql = itr.next();
-        //System.out.println(sql); 
-        stmt.executeUpdate(sql);
-        
-        }
-        
-        System.out.println("Loading data to ALLOC");
-        itr=alloc.iterator();  
+        itr=cdata.iterator();  
         while(itr.hasNext()){  
         sql = itr.next();
         stmt.executeUpdate(sql);
-        //System.out.println(sql); 
+        System.out.println(sql); 
         }
         
-        System.out.println("Loading data to WRITE OFF");
-        itr=writeoff.iterator();  
-        while(itr.hasNext()){  
-        sql = itr.next();
-        stmt.executeUpdate(sql);
-        //System.out.println(sql); 
-        }
             
         }
         catch (SQLException se){
@@ -159,9 +136,7 @@ public class ParseDebtorTransactionsData {
         stmt.executeUpdate("delete from correction");    
         stmt.executeUpdate("delete from adjust");    
         stmt.executeUpdate("delete from o1cf");
-        stmt.executeUpdate("delete from settled");
-        stmt.executeUpdate("delete from alloc");
-        stmt.executeUpdate("delete from writeoff");
+        stmt.executeUpdate("delete from cdata");
         stmt.executeUpdate("delete from sanity");
         stmt.executeUpdate("delete from anomoly");
         
@@ -197,7 +172,6 @@ public class ParseDebtorTransactionsData {
                 double dval = 0;
                 double cval = 0;
                 String rpps = "";
-                String filter = "";
                 
                 
         while (iterator.hasNext()) {
@@ -207,9 +181,7 @@ public class ParseDebtorTransactionsData {
              cval=0;
             while (cellIterator.hasNext()) {
                 Cell cell = cellIterator.next();
-                
-                
-                if( cell.getColumnIndex() == 23 || cell.getColumnIndex() == c1 || cell.getColumnIndex() == c2 || cell.getColumnIndex() == c3 || cell.getColumnIndex() == c4 || cell.getColumnIndex() == c5 || cell.getColumnIndex() == c6)  
+                if(cell.getColumnIndex() == c1 || cell.getColumnIndex() == c2 || cell.getColumnIndex() == c3 || cell.getColumnIndex() == c4 || cell.getColumnIndex() == c5 || cell.getColumnIndex() == c6)  
                 {
                         
                 switch (cell.getCellType()) {
@@ -230,11 +202,6 @@ public class ParseDebtorTransactionsData {
                          if (cell.getColumnIndex() == c4 )
                         {
                             per=cell.getStringCellValue();
-                        }
-                         
-                         if (cell.getColumnIndex() == 23 )
-                        {
-                            filter=cell.getStringCellValue();
                         }
                                                                         
                         break;
@@ -257,23 +224,9 @@ public class ParseDebtorTransactionsData {
                 }
                 
             }
-            if(rec.length() == 5 || rec.length() == 8){
+            if((rec.length() == 5 || rec.length() == 8) && (pay.length() == 5 || pay.length() == 8) ){
             rpps = rec+"-"+pay+"-"+per+"-"+svc;
-            
-           if(tbl.equalsIgnoreCase("open") || tbl.equalsIgnoreCase("close")) 
-           {
-               if(filter.equalsIgnoreCase("Missing Invoice") || filter.equalsIgnoreCase("Unreconciled") || filter.equalsIgnoreCase(""))
-                       {
-                           continue;
-                       }
-               
-           }
-            
-           // if(name.equalsIgnoreCase("Settled Transactions-Funds-Paid")){
             //System.out.println(rpps+"|"+dval+"|"+cval);
-            //}
-            //System.out.println("insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")");
-            //System.out.println();
             // ADD insert Query to Array 
             sqlstr = "insert into "+tbl+" (rpps,sdrval) values(\""+rpps+"\","+dval+")";
             ar.add(sqlstr);

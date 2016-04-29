@@ -152,7 +152,7 @@ public class ParseCreditorData {
     {
         
                     
-        String excelFilePath = "GBRCNCOR.xlsx";
+        String excelFilePath = "S9/GBRCNCOR.xlsx";
         FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
         
         ArrayList<String> ar = new ArrayList<String>();
