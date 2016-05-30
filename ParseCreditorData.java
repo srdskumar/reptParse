@@ -38,7 +38,7 @@ public class ParseCreditorData {
         //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
         ArrayList<String> open = parseReport("Uninv Opening Position",1,2,5,8,46,46,"open");
         ArrayList<String> close = parseReport("Uninv Closing Position",1,2,5,8,46,46,"close");
-        ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,10,10,"rinvoice");
         ArrayList<String> correction = parseReport("Uninv Creditor Data Corrections",1,0,4,5,10,10,"correction");
         ArrayList<String> adjust = parseReport("Uninv Creditor Adjustments",4,0,7,8,11,11,"adjust");
         ArrayList<String> o1cf = parseReport("Uninv One1Clear Features",1,2,8,5,46,46,"o1cf");

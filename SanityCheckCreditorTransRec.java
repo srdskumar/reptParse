@@ -156,7 +156,9 @@ public class SanityCheckCreditorTransRec {
              rinvoice = rs.getDouble("rinvoice");
              close = rs.getDouble("close");
              
-             recdiff = open - rinvoice + correction + adjust + o1cf - settled + alloc + writeoff - close;
+             
+             //recdiff = open - rinvoice + correction + adjust + o1cf - settled + alloc + writeoff - close;
+              recdiff = open + rinvoice + correction + adjust + o1cf - settled + alloc + writeoff - close;
              recdiff = Math.round(recdiff);
              
              

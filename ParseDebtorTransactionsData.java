@@ -38,7 +38,8 @@ public class ParseDebtorTransactionsData {
         //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
         ArrayList<String> open = parseReport("Opening Position",1,2,5,8,44,46,"open");
         ArrayList<String> close = parseReport("Closing Position",1,2,5,8,44,46,"close");
-        ArrayList<String> rinvoice = parseReport("Debtor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        //ArrayList<String> rinvoice = parseReport("Debtor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> rinvoice = parseReport("Debtor Reconciled Invoices",0,1,2,3,10,10,"rinvoice");
         ArrayList<String> correction = parseReport("Debtor Data Corrections",0,1,4,5,10,10,"correction");
         ArrayList<String> adjust = parseReport("Debtor Adjustments",0,4,7,8,11,11,"adjust");
         ArrayList<String> o1cf = parseReport("One1Clear Features",1,2,5,8,41,43,"o1cf");

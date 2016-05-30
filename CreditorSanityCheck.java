@@ -147,7 +147,8 @@ public class CreditorSanityCheck {
              //Netoffs
              rinvoice = rs.getDouble("rinvoice");
              close = rs.getDouble("close");
-             recdiff = open + cdata + correction - adjust + o1cf - rinvoice - close;
+             //recdiff = open + cdata + correction - adjust + o1cf - rinvoice - close;
+             recdiff = open + cdata - correction + adjust + o1cf - rinvoice - close;
              recdiff = Math.round(recdiff);
              
              

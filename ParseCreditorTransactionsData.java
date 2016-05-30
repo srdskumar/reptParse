@@ -38,7 +38,8 @@ public class ParseCreditorTransactionsData {
         //String sheet_names[] = {"Uninv Opening Position","Uninv Closing Position","Debtor Reconciled Invoices","Uninv Debtor Data Corrections","Uninv Debtor Adjustments","Uninv One1Clear Features","Debtor Control Data"};            
         ArrayList<String> open = parseReport("Opening Position",1,2,5,8,46,46,"open");
         ArrayList<String> close = parseReport("Closing Position",1,2,5,8,46,46,"close");
-        ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        //ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,5,6,"rinvoice");
+        ArrayList<String> rinvoice = parseReport("Creditor Reconciled Invoices",0,1,2,3,10,10,"rinvoice");
         ArrayList<String> correction = parseReport("Creditor Data Corrections",1,0,4,5,10,10,"correction");
         ArrayList<String> adjust = parseReport("Creditor Adjustments",4,0,7,8,11,11,"adjust");
         ArrayList<String> o1cf = parseReport("One1Clear Features",1,2,5,8,43,41,"o1cf");
@@ -262,10 +263,17 @@ public class ParseCreditorTransactionsData {
             
            if(tbl.equalsIgnoreCase("open") || tbl.equalsIgnoreCase("close")) 
            {
-               if(filter.equalsIgnoreCase("Missing Invoice") || filter.equalsIgnoreCase("Unreconciled") || filter.equalsIgnoreCase(""))
+               
+               
+               if(filter.equalsIgnoreCase("Missing Invoice") || filter.equalsIgnoreCase("Unreconciled") || filter.equalsIgnoreCase("") || filter.equalsIgnoreCase("-"))
                        {
+                           System.out.print(rpps);
+                           System.out.println(filter);
                            continue;
                        }
+               
+               System.out.print(filter);
+               System.out.println(rpps);
                
            }
             

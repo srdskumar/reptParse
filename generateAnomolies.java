@@ -26,6 +26,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 
 public class generateAnomolies {
@@ -68,6 +71,24 @@ public class generateAnomolies {
          List ls;
          List ls2,ls3,ls4;
          
+        Font font = workbook.createFont();
+        font.setFontHeightInPoints((short)12);
+        font.setFontName("Cambria");
+        
+        Font hfont = workbook.createFont();
+        hfont.setFontHeightInPoints((short)12);
+        hfont.setFontName("Cambria");
+        
+        CellStyle style = workbook.createCellStyle();
+        CellStyle hstyle = workbook.createCellStyle();
+        
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);  
+        
+        hstyle.setFont(font);
+        hstyle.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        hstyle.setFillPattern(CellStyle.SOLID_FOREGROUND); 
         
          //System.out.println(hm);
          XSSFSheet sheet = workbook.createSheet("Debtors");
@@ -79,9 +100,49 @@ public class generateAnomolies {
             
          
                     int rowCount = 0;
+                    Row row = sheet.createRow(0);
+                    Cell hcell = row.createCell(1);
+                    hcell.setCellValue((String) "RPPS");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(2);
+                    hcell.setCellValue((String) "SVC");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(3);
+                    hcell.setCellValue((String) "OPEN");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(4);
+                    hcell.setCellValue((String) "RINVOICE");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(5);
+                    hcell.setCellValue((String) "CORRECTION");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(6);
+                    hcell.setCellValue((String) "ADJUST");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(7);
+                    hcell.setCellValue((String) "O1C");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(8);
+                    hcell.setCellValue((String) "SETTLED");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(9);
+                    hcell.setCellValue((String) "ALLOC");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(10);
+                    hcell.setCellValue((String) "WRITEOFF");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(11);
+                    hcell.setCellValue((String) "CLOSE");
+                    hcell.setCellStyle(hstyle);
+                    hcell = row.createCell(12);
+                    hcell.setCellValue((String) "RECDIFF");
+                    hcell.setCellStyle(hstyle);
+                    
+                    
+                    
                     while (iterator.hasNext()) {
                         
-                        Row row = sheet.createRow(++rowCount);
+                        row = sheet.createRow(++rowCount);
                         int columnCount = 0;
                         String field = "";
                        
@@ -89,8 +150,10 @@ public class generateAnomolies {
                        String key = iterator.next().toString();
                        field = key;
                        Cell cell = row.createCell(++columnCount);
+                      
                        if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      }
                        
                        //System.out.println(hm.get(key));
@@ -105,7 +168,11 @@ public class generateAnomolies {
                                 cell.setCellValue((String) field);
                                      } 
                          
+                         cell.setCellStyle(style);
+                         
                         }
+                         
+                          
                        
                     }
          
@@ -115,7 +182,7 @@ public class generateAnomolies {
        
        while (iterator2.hasNext()) {
            
-            Row row = sheet2.createRow(++rowCount);
+            row = sheet2.createRow(++rowCount);
                         int columnCount = 0;
                         String field = "";
                        
@@ -125,6 +192,7 @@ public class generateAnomolies {
                        Cell cell = row.createCell(++columnCount);
                        if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      }
                        
                        //System.out.println(hm.get(key));
@@ -137,6 +205,7 @@ public class generateAnomolies {
                          cell = row.createCell(++columnCount);
                          if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      } 
                          
                         }
@@ -150,7 +219,7 @@ public class generateAnomolies {
        
        while (iterator3.hasNext()) {
            
-            Row row = sheet3.createRow(++rowCount);
+            row = sheet3.createRow(++rowCount);
                         int columnCount = 0;
                         String field = "";
                        
@@ -160,6 +229,7 @@ public class generateAnomolies {
                        Cell cell = row.createCell(++columnCount);
                        if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      }
                        
                        //System.out.println(hm.get(key));
@@ -172,6 +242,7 @@ public class generateAnomolies {
                          cell = row.createCell(++columnCount);
                          if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      } 
                          
                         }
@@ -188,7 +259,7 @@ public class generateAnomolies {
        
        while (iterator4.hasNext()) {
            
-            Row row = sheet4.createRow(++rowCount);
+            row = sheet4.createRow(++rowCount);
                         int columnCount = 0;
                         String field = "";
                        
@@ -198,6 +269,7 @@ public class generateAnomolies {
                        Cell cell = row.createCell(++columnCount);
                        if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      }
                        
                        //System.out.println(hm.get(key));
@@ -210,6 +282,7 @@ public class generateAnomolies {
                          cell = row.createCell(++columnCount);
                          if (field instanceof String) {
                                 cell.setCellValue((String) field);
+                                cell.setCellStyle(style);
                                      } 
                          
                         }
@@ -341,6 +414,7 @@ public class generateAnomolies {
         String alloc;
         String writeoff;
         String recdiff;
+        String close;
         
         HashMap<String, List<String>> hashMap = new HashMap<String, List<String>>();
         
@@ -369,9 +443,10 @@ public class generateAnomolies {
                  settled = rs.getString("settled");
                  alloc = rs.getString("alloc");
                  writeoff = rs.getString("writeoff");
+                 close = rs.getString("close");
                  recdiff = rs.getString("recdiff");
                  
-                 hashMap.put(rpps,Arrays.asList(svc,open,rinvoice,correction,adjust,o1cf,settled,alloc,writeoff,recdiff));
+                 hashMap.put(rpps,Arrays.asList(svc,open,rinvoice,correction,adjust,o1cf,settled,alloc,writeoff,close,recdiff));
                  
                                
                  

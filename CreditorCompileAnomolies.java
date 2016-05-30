@@ -104,7 +104,9 @@ public class CreditorCompileAnomolies {
                 
             }
                 //recdiff = open + cdata + correction - adjust + o1cf - rinvoice - close;
-                sql = "update anomoly set recdiff=open + cdata + correction - adjust + o1cf - rinvoice - close";
+                //sql = "update anomoly set recdiff=open + cdata + correction - adjust + o1cf - rinvoice - close";
+                 //recdiff = open + cdata - correction + adjust + o1cf - rinvoice - close;
+                sql = "update anomoly set recdiff=open + cdata - correction + adjust + o1cf - rinvoice - close";
                 System.out.println(sql);                 
                 utmt.executeUpdate(sql);
              
